@@ -457,6 +457,35 @@ void State::setModal(InteractiveSurface *surface)
 	_modal = surface;
 }
 
+const std::vector<Surface*> &State::getSurfaces() const
+{
+	return _surfaces;
+}
+
+InteractiveSurface *State::getModal() const
+{
+	return _modal;
+}
+
+void State::setAccessibilityTitle(const std::string &title)
+{
+	_accessibilityTitle = title;
+}
+
+const std::string &State::getAccessibilityTitle() const
+{
+	return _accessibilityTitle;
+}
+
+/**
+ * Gets the game instance shared by all states.
+ * @return Pointer to the game.
+ */
+Game *State::getGame() const
+{
+	return _game;
+}
+
 /**
  * Replaces a certain amount of colors in the state's palette.
  * @param colors Pointer to the set of colors.

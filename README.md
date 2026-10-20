@@ -1,5 +1,11 @@
 # OpenXcom [![Workflow Status][workflow-badge]][actions-url]
 
+[Русская версия](README_ru.md)
+
+[Blind XCom accessibility guide](docs/accessibility.md)
+
+[God mode](docs/god-mode.md)
+
 [workflow-badge]: https://github.com/OpenXcom/OpenXcom/workflows/ci/badge.svg
 [actions-url]: https://github.com/OpenXcom/OpenXcom/actions
 

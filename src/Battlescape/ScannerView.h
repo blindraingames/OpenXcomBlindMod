@@ -18,12 +18,22 @@
  * along with OpenXcom.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "../Engine/InteractiveSurface.h"
+#include <vector>
 
 namespace OpenXcom
 {
 
 class BattleUnit;
 class Game;
+
+/** One movement marker shown by the motion scanner. */
+struct MotionScannerBlip
+{
+	int x;
+	int y;
+	int z;
+	int size;
+};
 
 /**
  * Displays a view of units movement.
@@ -38,6 +48,8 @@ class ScannerView : public InteractiveSurface
 public:
 	/// Create the ScannerView
 	ScannerView (int w, int h, int x, int y, Game * game, BattleUnit *unit);
+	/// Gets the movement markers currently shown by the scanner.
+	std::vector<MotionScannerBlip> getBlips() const;
 	/// Draw the scanner view
 	void draw();
 	void animate();

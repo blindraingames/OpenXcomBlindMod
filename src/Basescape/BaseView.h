@@ -72,6 +72,14 @@ public:
 	int getGridX() const;
 	/// Gets the Y position of the currently selected square.
 	int getGridY() const;
+	/// Moves the logical accessibility cursor to a base grid square.
+	bool accessibilitySetGridPosition(int x, int y);
+	/// Gets the facility occupying a base grid square.
+	BaseFacility *getFacilityAt(int x, int y) const;
+	/// Gets the size of the facility placement selector.
+	int getSelectionSize() const;
+	/// Checks whether an area is inside the grid and has no facilities.
+	bool isAreaAvailable(int size) const;
 	/// Sets whether the base view is selectable.
 	void setSelectable(int size);
 	/// Checks if a facility can be placed.

@@ -78,6 +78,11 @@ PlaceLiftState::~PlaceLiftState()
 
 }
 
+RuleBaseFacility *PlaceLiftState::getFacilityRule() const
+{
+	return _lift;
+}
+
 /**
  * Processes clicking on facilities.
  * @param action Pointer to an action.

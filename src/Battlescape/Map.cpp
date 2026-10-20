@@ -1320,6 +1320,23 @@ void Map::setSelectorPosition(int mx, int my)
 }
 
 /**
+ * Sets the selector to a logical map position. This is used by keyboard-only
+ * interfaces which do not have a meaningful mouse coordinate.
+ * @param pos Position on the battlescape map.
+ */
+void Map::setSelectorPosition(const Position &pos)
+{
+	if (_selectorX != pos.x || _selectorY != pos.y || _camera->getViewLevel() != pos.z)
+	{
+		_selectorX = pos.x;
+		_selectorY = pos.y;
+		_camera->setViewLevel(pos.z);
+		_camera->centerOnPosition(pos);
+		_redraw = true;
+	}
+}
+
+/**
  * Handles animating tiles. 8 Frames per animation.
  * @param redraw Redraw the battlescape?
  */

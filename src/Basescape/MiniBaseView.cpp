@@ -74,6 +74,28 @@ size_t MiniBaseView::getHoveredBase() const
 	return _hoverBase;
 }
 
+size_t MiniBaseView::getBaseCount() const
+{
+	return _bases ? _bases->size() : 0;
+}
+
+Base *MiniBaseView::getBaseAt(size_t base) const
+{
+	return _bases && base < _bases->size() ? _bases->at(base) : 0;
+}
+
+size_t MiniBaseView::getSelectedBase() const
+{
+	return _base;
+}
+
+bool MiniBaseView::accessibilitySetHoveredBase(size_t base)
+{
+	if (!_bases || base >= _bases->size()) return false;
+	_hoverBase = base;
+	return true;
+}
+
 /**
  * Changes the base that is currently selected on
  * the mini base view.

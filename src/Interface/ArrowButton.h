@@ -49,6 +49,8 @@ public:
 	void setColor(Uint8 color);
 	/// Sets the arrow button's shape.
 	void setShape(ArrowShape shape);
+	/// Gets the arrow button's shape.
+	ArrowShape getShape() const;
 	/// Sets the arrow button's list.
 	void setTextList(TextList *list);
 	/// Handles the timers.

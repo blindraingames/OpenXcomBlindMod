@@ -831,6 +831,11 @@ bool Surface::getVisible() const
 	return _visible;
 }
 
+bool Surface::getHidden() const
+{
+	return _hidden;
+}
+
 /**
  * Resets the cropping rectangle set for this surface,
  * so the whole surface is blitted.

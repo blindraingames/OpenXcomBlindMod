@@ -144,7 +144,9 @@ void PsiAttackBState::psiAttack()
 
 	_unit->addPsiSkillExp();
 	if (Options::allowPsiStrengthImprovement) _target->addPsiStrengthExp();
-	if (attackStrength > defenseStrength)
+	const bool successful = attackStrength > defenseStrength;
+	_parent->recordPsiAttackResult(_action.type, _target, successful);
+	if (successful)
 	{
 		Game *game = _parent->getSave()->getBattleState()->getGame();
 		_action.actor->addPsiSkillExp();

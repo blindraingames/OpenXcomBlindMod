@@ -3,6 +3,23 @@ set ( root_src
   main.cpp
 )
 
+set ( accessibility_src
+  Accessibility/AccessibilityFocusManager.cpp
+  Accessibility/AccessibilityInput.cpp
+  Accessibility/AccessibilityManager.cpp
+  Accessibility/AccessibilityText.cpp
+  Accessibility/AccessibleNode.cpp
+  Accessibility/BasescapeAccessibility.cpp
+  Accessibility/BattlescapeAccessibility.cpp
+  Accessibility/GeoscapeAccessibility.cpp
+  Accessibility/GenericStateAccessibility.cpp
+	Accessibility/InventoryAccessibility.cpp
+	Accessibility/ScannerAccessibility.cpp
+  Accessibility/StateAccessibility.cpp
+  Accessibility/TolkBridge.cpp
+	Accessibility/UnitInfoAccessibility.cpp
+)
+
 set ( basescape_src
   Basescape/BaseInfoState.cpp
   Basescape/BaseView.cpp
@@ -427,7 +444,7 @@ if ( WIN32 )
   set ( openxcom_icon OpenXcom.rc )
 endif ()
 
-set ( openxcom_src ${root_src} ${basescape_src} ${battlescape_src} ${engine_src} ${geoscape_src} ${interface_src} ${menu_src} ${mod_src} ${savegame_src} ${ufopedia_src} )
+set ( openxcom_src ${root_src} ${accessibility_src} ${basescape_src} ${battlescape_src} ${engine_src} ${geoscape_src} ${interface_src} ${menu_src} ${mod_src} ${savegame_src} ${ufopedia_src} )
 
 set ( install_dest RUNTIME )
 set ( set_exec_path ON )
@@ -501,21 +518,31 @@ if ( APPLE AND CREATE_BUNDLE )
   postprocess_bundle ( openxcom ${bundle_path} )
 endif ()
 
-set ( bin_data_dirs TFTD UFO common standard )
-foreach ( binpath ${bin_data_dirs} )
-  if ( APPLE AND CREATE_BUNDLE )
-    add_custom_command ( TARGET openxcom
-      POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/bin/${binpath} ${bundle_path}/Contents/Resources/${binpath}
-	  VERBATIM )
-  else ()
-    add_custom_command ( TARGET openxcom
-      POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/bin/${binpath} ${EXECUTABLE_OUTPUT_PATH}/${binpath}
-	  VERBATIM )
-  endif ()
+set ( build_data_dirs common standard )
+if ( COPY_ORIGINAL_GAME_DATA_TO_BUILD )
+  list ( APPEND build_data_dirs TFTD UFO )
+endif ()
+
+if ( COPY_DATA_TO_BUILD )
+  foreach ( binpath ${build_data_dirs} )
+    if ( APPLE AND CREATE_BUNDLE )
+      add_custom_command ( TARGET openxcom
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/bin/${binpath} ${bundle_path}/Contents/Resources/${binpath}
+	    VERBATIM )
+    else ()
+      add_custom_command ( TARGET openxcom
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/bin/${binpath} ${EXECUTABLE_OUTPUT_PATH}/${binpath}
+	    VERBATIM )
+    endif ()
+  endforeach ()
+endif ()
+
+set ( install_data_dirs TFTD UFO common standard )
+foreach ( binpath ${install_data_dirs} )
   install ( DIRECTORY ${CMAKE_SOURCE_DIR}/bin/${binpath} DESTINATION ${data_install_dir} )
-endforeach()
+endforeach ()
 
 # Copy Windows DLLs to bin folder
 if ( WIN32 )
@@ -535,6 +562,7 @@ endif ()
 
 #Setup source groups for IDE
 if ( MSVC OR "${CMAKE_GENERATOR}" STREQUAL "Xcode" )
+  source_group ( "Accessibility" FILES ${accessibility_src} )
   source_group ( "Basescape" FILES ${basescape_src} )
   source_group ( "Battlescape" FILES ${battlescape_src} )
   source_group ( "Engine" FILES ${engine_src} )

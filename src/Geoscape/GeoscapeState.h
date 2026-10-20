@@ -33,6 +33,7 @@ class DogfightState;
 class Ufo;
 class MissionSite;
 class Base;
+class Target;
 class RuleMissionScript;
 
 /**
@@ -89,6 +90,12 @@ public:
 	void popup(State *state);
 	/// Gets the Geoscape globe.
 	Globe *getGlobe() const;
+	/// Gets the currently selected time speed (zero-based).
+	int getTimeSpeedIndex() const;
+	/// Gets the foremost expanded dogfight window, if one is active.
+	DogfightState *getActiveDogfight() const;
+	/// Opens a known globe target through the normal target UI.
+	void openTarget(Target *target);
 	/// Handler for clicking the globe.
 	void globeClick(Action *action);
 	/// Handler for clicking the Intercept button.

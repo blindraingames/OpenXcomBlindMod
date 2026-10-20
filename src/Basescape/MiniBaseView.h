@@ -52,6 +52,14 @@ public:
 	void setTexture(SurfaceSet *texture);
 	/// Gets the base the mouse is over.
 	size_t getHoveredBase() const;
+	/// Gets the number of bases displayed.
+	size_t getBaseCount() const;
+	/// Gets a base by index.
+	Base *getBaseAt(size_t base) const;
+	/// Gets the selected base index.
+	size_t getSelectedBase() const;
+	/// Moves the logical accessibility cursor to a base.
+	bool accessibilitySetHoveredBase(size_t base);
 	/// Sets the selected base for the mini base view.
 	void setSelectedBase(size_t base);
 	/// Draws the mini base view.

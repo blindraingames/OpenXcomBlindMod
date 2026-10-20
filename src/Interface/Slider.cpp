@@ -239,6 +239,19 @@ int Slider::getValue() const
 	return _value;
 }
 
+bool Slider::accessibilityAdjust(int direction, Action *action, State *state)
+{
+	if (direction == 0) return false;
+	const int oldValue = _value;
+	setValue(_value + (direction < 0 ? -1 : 1));
+	if (_value != oldValue && _change && action && state)
+	{
+		action->setSender(this);
+		(state->*_change)(action);
+	}
+	return _value != oldValue;
+}
+
 /**
  * Blits the slider contents
  * @param surface Pointer to surface to blit onto.

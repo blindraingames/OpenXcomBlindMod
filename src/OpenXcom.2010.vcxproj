@@ -321,6 +321,20 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Accessibility\AccessibilityFocusManager.cpp" />
+    <ClCompile Include="Accessibility\AccessibilityInput.cpp" />
+    <ClCompile Include="Accessibility\AccessibilityManager.cpp" />
+    <ClCompile Include="Accessibility\AccessibilityText.cpp" />
+    <ClCompile Include="Accessibility\AccessibleNode.cpp" />
+    <ClCompile Include="Accessibility\BasescapeAccessibility.cpp" />
+    <ClCompile Include="Accessibility\BattlescapeAccessibility.cpp" />
+    <ClCompile Include="Accessibility\GeoscapeAccessibility.cpp" />
+    <ClCompile Include="Accessibility\GenericStateAccessibility.cpp" />
+	<ClCompile Include="Accessibility\InventoryAccessibility.cpp" />
+    <ClCompile Include="Accessibility\ScannerAccessibility.cpp" />
+    <ClCompile Include="Accessibility\StateAccessibility.cpp" />
+    <ClCompile Include="Accessibility\TolkBridge.cpp" />
+    <ClCompile Include="Accessibility\UnitInfoAccessibility.cpp" />
     <ClCompile Include="Basescape\BaseInfoState.cpp" />
     <ClCompile Include="Basescape\BasescapeState.cpp" />
     <ClCompile Include="Basescape\BaseView.cpp" />
@@ -638,6 +652,20 @@
     <ClCompile Include="Ufopaedia\UfopaediaStartState.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Accessibility\AccessibilityFocusManager.h" />
+    <ClInclude Include="Accessibility\AccessibilityInput.h" />
+    <ClInclude Include="Accessibility\AccessibilityManager.h" />
+    <ClInclude Include="Accessibility\AccessibilityText.h" />
+    <ClInclude Include="Accessibility\AccessibleNode.h" />
+    <ClInclude Include="Accessibility\BasescapeAccessibility.h" />
+    <ClInclude Include="Accessibility\BattlescapeAccessibility.h" />
+    <ClInclude Include="Accessibility\GeoscapeAccessibility.h" />
+    <ClInclude Include="Accessibility\GenericStateAccessibility.h" />
+	<ClInclude Include="Accessibility\InventoryAccessibility.h" />
+    <ClInclude Include="Accessibility\ScannerAccessibility.h" />
+    <ClInclude Include="Accessibility\StateAccessibility.h" />
+    <ClInclude Include="Accessibility\TolkBridge.h" />
+    <ClInclude Include="Accessibility\UnitInfoAccessibility.h" />
     <ClInclude Include="Basescape\BaseInfoState.h" />
     <ClInclude Include="Basescape\BasescapeState.h" />
     <ClInclude Include="Basescape\BaseView.h" />

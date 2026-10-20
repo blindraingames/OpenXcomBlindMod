@@ -144,6 +144,8 @@ SellState::SellState(Base *base, OptionsOrigin origin) : _base(base), _sel(0), _
 	_lstItems->onRightArrowRelease((ActionHandler)&SellState::lstItemsRightArrowRelease);
 	_lstItems->onRightArrowClick((ActionHandler)&SellState::lstItemsRightArrowClick);
 	_lstItems->onMousePress((ActionHandler)&SellState::lstItemsMousePress);
+	_lstItems->onAccessibilityDecrease((ActionHandler)&SellState::accessibilityDecrease);
+	_lstItems->onAccessibilityIncrease((ActionHandler)&SellState::accessibilityIncrease);
 
 	_cats.push_back("STR_ALL_ITEMS");
 
@@ -643,6 +645,22 @@ void SellState::decrease()
 	_timerInc->setInterval(50);
 	_timerDec->setInterval(50);
 	changeByValue(1,-1);
+}
+
+void SellState::accessibilityDecrease(Action *)
+{
+	const unsigned int selected = _lstItems->getSelectedRow();
+	if (selected == static_cast<unsigned int>(-1) || selected >= _rows.size()) return;
+	_sel = selected;
+	changeByValue(1, -1);
+}
+
+void SellState::accessibilityIncrease(Action *)
+{
+	const unsigned int selected = _lstItems->getSelectedRow();
+	if (selected == static_cast<unsigned int>(-1) || selected >= _rows.size()) return;
+	_sel = selected;
+	changeByValue(1, 1);
 }
 
 /**

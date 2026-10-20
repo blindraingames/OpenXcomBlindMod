@@ -31,6 +31,7 @@ class Language;
 class SavedGame;
 class Mod;
 class FpsCounter;
+class AccessibilityManager;
 
 /**
  * The core of the game engine, manages the game's entire contents and structure.
@@ -50,6 +51,7 @@ private:
 	Mod *_mod;
 	bool _quit, _init;
 	FpsCounter *_fpsCounter;
+	AccessibilityManager *_accessibility;
 	bool _mouseActive;
 	unsigned int _timeOfLastFrame;
 	int _timeUntilNextFrame;

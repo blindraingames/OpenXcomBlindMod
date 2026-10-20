@@ -493,6 +493,22 @@ void GeoscapeState::handle(Action *action)
 }
 
 /**
+ * Returns the foremost dogfight window that is currently expanded.
+ * Dogfights are embedded in the Geoscape instead of being pushed onto the
+ * game state stack, so accessibility adapters need an explicit way to find
+ * the window that is receiving input.
+ * @return Active expanded dogfight, or 0 if all dogfights are minimized.
+ */
+DogfightState *GeoscapeState::getActiveDogfight() const
+{
+	for (std::list<DogfightState*>::const_reverse_iterator it = _dogfights.rbegin(); it != _dogfights.rend(); ++it)
+	{
+		if (!(*it)->isMinimized()) return *it;
+	}
+	return 0;
+}
+
+/**
  * Updates the timer display and resets the palette
  * since it's bound to change on other screens.
  */
@@ -1814,6 +1830,33 @@ void GeoscapeState::popup(State *state)
 Globe *GeoscapeState::getGlobe() const
 {
 	return _globe;
+}
+
+/**
+ * Gets the selected time speed.
+ * @return Zero-based speed index.
+ */
+int GeoscapeState::getTimeSpeedIndex() const
+{
+	const TextButton *speeds[] = {_btn5Secs, _btn1Min, _btn5Mins, _btn30Mins, _btn1Hour, _btn1Day};
+	for (int i = 0; i < 6; ++i)
+	{
+		if (_timeSpeed == speeds[i]) return i;
+	}
+	return 0;
+}
+
+/**
+ * Opens a known target using the same popup flow as a globe click.
+ * @param target Target to open.
+ */
+void GeoscapeState::openTarget(Target *target)
+{
+	if (!target || buttonsDisabled()) return;
+	_globe->center(target->getLongitude(), target->getLatitude());
+	std::vector<Target*> targets;
+	targets.push_back(target);
+	_game->pushState(new MultipleTargetsState(targets, 0, this));
 }
 
 /**

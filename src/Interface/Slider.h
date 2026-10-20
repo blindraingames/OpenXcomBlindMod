@@ -70,6 +70,8 @@ public:
 	void setValue(int value);
 	/// Gets the slider's value.
 	int getValue() const;
+	/// Adjusts the value by one keyboard step and emits the change callback.
+	bool accessibilityAdjust(int direction, Action *action, State *state);
 	/// Blits the slider onto another surface.
 	void blit(Surface *surface);
 	/// Moves the slider.

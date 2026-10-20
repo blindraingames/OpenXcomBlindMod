@@ -17,7 +17,9 @@
  * along with OpenXcom.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "NewGameState.h"
+#include <limits>
 #include "../Engine/Game.h"
+#include "../Engine/Logger.h"
 #include "../Mod/Mod.h"
 #include "../Engine/LocalizedText.h"
 #include "../Interface/TextButton.h"
@@ -38,6 +40,7 @@ namespace OpenXcom
  */
 NewGameState::NewGameState()
 {
+	setAccessibilityTitle(tr("STR_SELECT_DIFFICULTY_LEVEL"));
 	// Create objects
 	_window = new Window(this, 192, 180, 64, 10, POPUP_VERTICAL);
 	_btnBeginner = new TextButton(160, 18, 80, 32);
@@ -144,6 +147,11 @@ void NewGameState::btnOkClick(Action *)
 	SavedGame *save = _game->getMod()->newSave();
 	save->setDifficulty(diff);
 	save->setIronman(_btnIronman->getPressed());
+	if (Options::godMode)
+	{
+		save->setFunds(std::numeric_limits<int64_t>::max());
+		Log(LOG_INFO) << "God mode: new campaign funds set to " << save->getFunds() << ".";
+	}
 	_game->setSavedGame(save);
 
 	GeoscapeState *gs = new GeoscapeState;

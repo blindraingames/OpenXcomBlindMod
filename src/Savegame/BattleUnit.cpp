@@ -1086,6 +1086,16 @@ int BattleUnit::getMorale() const
 }
 
 /**
+ * Returns whether this unit is a human XCOM soldier protected by god mode.
+ * Original faction is used so mind control cannot protect aliens or remove
+ * protection from XCOM soldiers.
+ */
+bool BattleUnit::isGodProtected() const
+{
+	return Options::godMode && _originalFaction == FACTION_PLAYER && _geoscapeSoldier != 0;
+}
+
+/**
  * Do an amount of damage.
  * @param relative The relative position of which part of armor and/or bodypart is hit.
  * @param power The amount of damage to inflict.
@@ -1095,6 +1105,10 @@ int BattleUnit::getMorale() const
  */
 int BattleUnit::damage(Position relative, int power, ItemDamageType type, bool ignoreArmor)
 {
+	if (isGodProtected())
+	{
+		return 0;
+	}
 	UnitSide side = SIDE_FRONT;
 	UnitBodyPart bodypart = BODYPART_TORSO;
 	_hitByAnything = true;
@@ -1243,6 +1257,10 @@ int BattleUnit::getStunlevel() const
  */
 void BattleUnit::knockOut(BattlescapeGame *battle)
 {
+	if (isGodProtected())
+	{
+		return;
+	}
 	if (!_spawnUnit.empty())
 	{
 		setRespawn(false);
@@ -1682,13 +1700,21 @@ void BattleUnit::prepareNewTurn(bool fullProcess)
 		return;
 	}
 
-	// suffer from fatal wounds
-	_health -= getFatalWounds();
-
-	// suffer from fire
-	if (!_hitByFire && _fire > 0)
+	if (!isGodProtected())
 	{
-		_health -= _armor->getDamageModifier(DT_IN) * RNG::generate(Mod::FIRE_DAMAGE_RANGE[0], Mod::FIRE_DAMAGE_RANGE[1]);
+		// suffer from fatal wounds
+		_health -= getFatalWounds();
+
+		// suffer from fire
+		if (!_hitByFire && _fire > 0)
+		{
+			_health -= _armor->getDamageModifier(DT_IN) * RNG::generate(Mod::FIRE_DAMAGE_RANGE[0], Mod::FIRE_DAMAGE_RANGE[1]);
+			_fire--;
+		}
+	}
+	else if (!_hitByFire && _fire > 0)
+	{
+		// Let fire expire normally without harming the protected soldier.
 		_fire--;
 	}
 

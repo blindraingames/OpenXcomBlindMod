@@ -45,6 +45,20 @@
 namespace OpenXcom
 {
 
+namespace
+{
+
+bool isAccessibleInventoryItem(BattleItem *item)
+{
+	if (!item) return false;
+	RuleItem *rules = item->getRules();
+	return rules && !rules->isFixed() &&
+		rules->getInventoryWidth() > 0 && rules->getInventoryHeight() > 0 &&
+		rules->getBigSprite() >= 0;
+}
+
+}
+
 /**
  * Sets up an inventory with the specified size and position.
  * @param game Pointer to core game.
@@ -370,6 +384,40 @@ bool Inventory::overlapItems(BattleUnit *unit, BattleItem *item, RuleInventory *
 		{
 			if ((*i)->occupiesSlot(x, y, item))
 			{
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+/**
+ * Finds the first position where an item fits in an inventory section.
+ * @param slot Inventory section to search.
+ * @param item Item to place.
+ * @param x Resulting X position.
+ * @param y Resulting Y position.
+ * @return True if a free position was found.
+ */
+bool Inventory::findItemPosition(RuleInventory *slot, BattleItem *item, int *x, int *y) const
+{
+	if (!slot || !item || !x || !y || slot->getType() == INV_GROUND) return false;
+	int maxSlotX = 0;
+	int maxSlotY = 0;
+	for (std::vector<RuleSlot>::const_iterator i = slot->getSlots()->begin(); i != slot->getSlots()->end(); ++i)
+	{
+		if (i->x > maxSlotX) maxSlotX = i->x;
+		if (i->y > maxSlotY) maxSlotY = i->y;
+	}
+	for (int candidateY = 0; candidateY <= maxSlotY; ++candidateY)
+	{
+		for (int candidateX = 0; candidateX <= maxSlotX; ++candidateX)
+		{
+			if (!overlapItems(_selUnit, item, slot, candidateX, candidateY) &&
+				slot->fitItemInSlot(item->getRules(), candidateX, candidateY))
+			{
+				*x = candidateX;
+				*y = candidateY;
 				return true;
 			}
 		}
@@ -950,35 +998,20 @@ void Inventory::arrangeGround(bool alterOffset)
  */
 bool Inventory::fitItem(RuleInventory *newSlot, BattleItem *item, std::string &warning)
 {
-	bool placed = false;
-	int maxSlotX = 0;
-	int maxSlotY = 0;
-	for (std::vector<RuleSlot>::iterator j = newSlot->getSlots()->begin(); j != newSlot->getSlots()->end(); ++j)
+	int x = 0;
+	int y = 0;
+	if (findItemPosition(newSlot, item, &x, &y))
 	{
-		if (j->x > maxSlotX) maxSlotX = j->x;
-		if (j->y > maxSlotY) maxSlotY = j->y;
-	}
-	for (int y2 = 0; y2 <= maxSlotY && !placed; ++y2)
-	{
-		for (int x2 = 0; x2 <= maxSlotX && !placed; ++x2)
+		if (!_tu || _selUnit->spendTimeUnits(item->getSlot()->getCost(newSlot)))
 		{
-			if (!overlapItems(_selUnit, item, newSlot, x2, y2) && newSlot->fitItemInSlot(item->getRules(), x2, y2))
-			{
-				if (!_tu || _selUnit->spendTimeUnits(item->getSlot()->getCost(newSlot)))
-				{
-					placed = true;
-					moveItem(item, newSlot, x2, y2);
-					_game->getMod()->getSoundByDepth(_depth, Mod::ITEM_DROP)->play();
-					drawItems();
-				}
-				else
-				{
-					warning = "STR_NOT_ENOUGH_TIME_UNITS";
-				}
-			}
+			moveItem(item, newSlot, x, y);
+			_game->getMod()->getSoundByDepth(_depth, Mod::ITEM_DROP)->play();
+			drawItems();
+			return true;
 		}
+		warning = "STR_NOT_ENOUGH_TIME_UNITS";
 	}
-	return placed;
+	return false;
 }
 
 /**
@@ -1037,6 +1070,156 @@ void Inventory::drawPrimers()
 		tempSurface->blitNShade(_items, (*i).first, (*i).second, Pulsate[_animFrame]);
 	}
 	_animFrame++;
+}
+
+std::vector<BattleItem*> Inventory::getAccessibleItems() const
+{
+	std::vector<BattleItem*> items;
+	if (!_selUnit) return items;
+	for (std::vector<BattleItem*>::const_iterator i = _selUnit->getInventory()->begin(); i != _selUnit->getInventory()->end(); ++i)
+	{
+		if (isAccessibleInventoryItem(*i)) items.push_back(*i);
+	}
+	if (_selUnit->getTile())
+	{
+		for (std::vector<BattleItem*>::const_iterator i = _selUnit->getTile()->getInventory()->begin(); i != _selUnit->getTile()->getInventory()->end(); ++i)
+		{
+			if (isAccessibleInventoryItem(*i)) items.push_back(*i);
+		}
+	}
+	return items;
+}
+
+bool Inventory::accessibilityCycleMove(BattleItem *item, std::string &message)
+{
+	if (!_selUnit || !isAccessibleInventoryItem(item) || !item->getSlot()) return false;
+	const std::vector<std::string> &sectionIds = _game->getMod()->getInvsList();
+	if (sectionIds.size() < 2) return false;
+
+	std::vector<RuleInventory*> sections;
+	const char *preferredSections[] =
+	{
+		"STR_BACK_PACK",
+		"STR_BELT",
+		"STR_RIGHT_HAND",
+		"STR_GROUND",
+		"STR_LEFT_HAND"
+	};
+	for (std::size_t i = 0; i < sizeof(preferredSections) / sizeof(preferredSections[0]); ++i)
+	{
+		RuleInventory *section = _game->getMod()->getInventory(preferredSections[i]);
+		if (section && std::find(sections.begin(), sections.end(), section) == sections.end())
+		{
+			sections.push_back(section);
+		}
+	}
+	for (std::vector<std::string>::const_iterator i = sectionIds.begin(); i != sectionIds.end(); ++i)
+	{
+		RuleInventory *section = _game->getMod()->getInventory(*i);
+		if (!section) continue;
+		if (std::find(sections.begin(), sections.end(), section) == sections.end()) sections.push_back(section);
+	}
+	std::size_t current = sections.size();
+	for (std::size_t i = 0; i < sections.size(); ++i)
+	{
+		if (sections[i] == item->getSlot())
+		{
+			current = i;
+			break;
+		}
+	}
+	if (sections.size() < 2 || current >= sections.size()) return false;
+
+	bool spaceFound = false;
+	bool affordableSpaceFound = false;
+	for (std::size_t offset = 1; offset < sections.size(); ++offset)
+	{
+		RuleInventory *destination = sections[(current + offset) % sections.size()];
+		int x = 0;
+		int y = 0;
+		if (destination->getType() == INV_GROUND)
+		{
+			if (!_selUnit->getTile()) continue;
+		}
+		else if (!findItemPosition(destination, item, &x, &y))
+		{
+			continue;
+		}
+
+		spaceFound = true;
+		const int cost = item->getSlot()->getCost(destination);
+		if (_tu && cost > _selUnit->getTimeUnits()) continue;
+		affordableSpaceFound = true;
+		if (_tu && !_selUnit->spendTimeUnits(cost)) continue;
+
+		moveItem(item, destination, x, y);
+		_game->getMod()->getSoundByDepth(_depth, Mod::ITEM_DROP)->play();
+		if (destination->getType() == INV_GROUND)
+		{
+			arrangeGround(false);
+		}
+		else
+		{
+			drawItems();
+		}
+		message = destination->getId();
+		return true;
+	}
+
+	message = spaceFound && !affordableSpaceFound ? "STR_NOT_ENOUGH_TIME_UNITS" : "STR_NOT_ENOUGH_SPACE";
+	return false;
+}
+
+bool Inventory::accessibilityLoadOrUnload(BattleItem *item, std::string &message)
+{
+	if (!_selUnit || !item) return false;
+	if (item->getAmmoItem())
+	{
+		setSelectedItem(item);
+		const bool result = unload();
+		message = result ? "STR_UNLOAD_WEAPON" : "STR_ACCESSIBILITY_INVENTORY_ACTION_FAILED";
+		return result;
+	}
+	const std::string ammoType = item->getRules()->getType();
+	for (std::vector<BattleItem*>::iterator i = _selUnit->getInventory()->begin(); i != _selUnit->getInventory()->end(); ++i)
+	{
+		BattleItem *weapon = *i;
+		if (!weapon || weapon == item || weapon->getAmmoItem()) continue;
+		const std::vector<std::string> &compatible = *weapon->getRules()->getCompatibleAmmo();
+		if (std::find(compatible.begin(), compatible.end(), ammoType) == compatible.end()) continue;
+		if (_tu && !_selUnit->spendTimeUnits(15))
+		{
+			message = "STR_NOT_ENOUGH_TIME_UNITS";
+			return false;
+		}
+		moveItem(item, 0, 0, 0);
+		weapon->setAmmoItem(item);
+		item->moveToOwner(0);
+		drawItems();
+		message = "STR_ACCESSIBILITY_AMMUNITION_LOADED";
+		return true;
+	}
+	message = "STR_ACCESSIBILITY_NO_COMPATIBLE_WEAPON";
+	return false;
+}
+
+bool Inventory::accessibilityTogglePrime(BattleItem *item, int timer, std::string &message)
+{
+	if (_tu || !item) return false;
+	const BattleType type = item->getRules()->getBattleType();
+	if (type != BT_GRENADE && type != BT_PROXIMITYGRENADE) return false;
+	if (item->getFuseTimer() >= 0)
+	{
+		item->setFuseTimer(-1);
+		message = "STR_GRENADE_IS_DEACTIVATED";
+	}
+	else
+	{
+		item->setFuseTimer(type == BT_PROXIMITYGRENADE ? 0 : std::max(0, std::min(23, timer)));
+		message = "STR_GRENADE_IS_ACTIVATED";
+	}
+	drawItems();
+	return true;
 }
 
 }

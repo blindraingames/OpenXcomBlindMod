@@ -81,6 +81,15 @@ ScannerState::~ScannerState()
 }
 
 /**
+ * Gets the scanner view.
+ * @return The scanner view.
+ */
+ScannerView *ScannerState::getScannerView() const
+{
+	return _scannerView;
+}
+
+/**
  * Closes the window on right-click.
  * @param action Pointer to an action.
  */

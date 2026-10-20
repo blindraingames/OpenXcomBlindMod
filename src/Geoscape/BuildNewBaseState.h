@@ -61,6 +61,10 @@ public:
 	void handle(Action *action);
 	/// Handler for clicking the globe.
 	void globeClick(Action *action);
+	/// Gets the globe used for base placement.
+	Globe *getGlobe() const;
+	/// Places the base at a polar coordinate using the normal validation flow.
+	void placeBase(double lon, double lat);
 	/// Handler for mouse hovering the globe.
 	void globeHover(Action *action);
 	/// Handler for redrawing hover (delayed)

@@ -28,6 +28,12 @@ Thumbs.db
 *.exp
 *.pdb
 *.dll
+!deps/lib/x64/Tolk.dll
+!deps/lib/x64/nvdaControllerClient64.dll
+!deps/lib/x64/SAAPI64.dll
+!deps/lib/Win32/Tolk.dll
+!deps/lib/Win32/nvdaControllerClient32.dll
+!deps/lib/Win32/SAAPI32.dll
 *.*.*.user
 *.aps
 *.pch
@@ -49,6 +55,7 @@ Thumbs.db
 *.sbr
 [Rr]elease*/
 [Tt]est[Rr]esults/
+obj/accessibility-*/
 _UpgradeReport_Files/
 _ReSharper.*/
 *.ipch

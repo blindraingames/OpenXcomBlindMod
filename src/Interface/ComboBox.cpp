@@ -276,6 +276,38 @@ void ComboBox::setText(const std::string &text)
 	_button->setText(text);
 }
 
+std::string ComboBox::getText() const
+{
+	return _button->getText();
+}
+
+size_t ComboBox::getOptionCount() const
+{
+	return _list->getTexts();
+}
+
+bool ComboBox::accessibilityMoveSelection(int direction, Action *action, State *state)
+{
+	const size_t count = getOptionCount();
+	if (count == 0 || direction == 0) return false;
+	const size_t oldSelection = _sel;
+	if (direction < 0)
+	{
+		_sel = (_sel == 0 || _sel >= count) ? count - 1 : _sel - 1;
+	}
+	else
+	{
+		_sel = (_sel + 1) % count;
+	}
+	setSelected(_sel);
+	if (_sel != oldSelection && _change && action && state)
+	{
+		action->setSender(this);
+		(state->*_change)(action);
+	}
+	return _sel != oldSelection;
+}
+
 /**
  * Changes the currently selected option.
  * @param sel Selected row.

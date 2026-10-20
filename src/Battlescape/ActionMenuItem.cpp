@@ -115,6 +115,21 @@ int ActionMenuItem::getTUs() const
 	return _tu;
 }
 
+std::string ActionMenuItem::getDescription() const
+{
+	return _txtDescription->getText();
+}
+
+std::string ActionMenuItem::getAccuracyText() const
+{
+	return _txtAcc->getText();
+}
+
+std::string ActionMenuItem::getTUText() const
+{
+	return _txtTU->getText();
+}
+
 /**
  * Replaces a certain amount of colors in the surface's palette.
  * @param colors Pointer to the set of colors.

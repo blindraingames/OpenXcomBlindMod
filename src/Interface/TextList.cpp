@@ -24,6 +24,7 @@
 #include "../Engine/Font.h"
 #include "../Engine/Palette.h"
 #include "../Engine/Options.h"
+#include "../Engine/State.h"
 #include "ArrowButton.h"
 #include "ComboBox.h"
 #include "ScrollBar.h"
@@ -41,7 +42,8 @@ namespace OpenXcom
  */
 TextList::TextList(int width, int height, int x, int y) : InteractiveSurface(width, height, x, y), _big(0), _small(0), _font(0), _scroll(0), _visibleRows(0), _selRow(0), _color(0), _dot(false), _selectable(false), _condensed(false), _contrast(false), _wrap(false), _flooding(false),
 																								   _bg(0), _selector(0), _margin(0), _scrolling(true), _arrowPos(-1), _scrollPos(4), _arrowType(ARROW_VERTICAL),
-																								   _leftClick(0), _leftPress(0), _leftRelease(0), _rightClick(0), _rightPress(0), _rightRelease(0), _arrowsLeftEdge(0), _arrowsRightEdge(0), _comboBox(0)
+																	   _leftClick(0), _leftPress(0), _leftRelease(0), _rightClick(0), _rightPress(0), _rightRelease(0),
+																	   _accessibilityDecrease(0), _accessibilityIncrease(0), _arrowsLeftEdge(0), _arrowsRightEdge(0), _comboBox(0)
 {
 	_up = new ArrowButton(ARROW_BIG_UP, 13, 14, getX() + getWidth() + _scrollPos, getY());
 	_up->setVisible(false);
@@ -258,6 +260,43 @@ size_t TextList::getRows() const
 size_t TextList::getVisibleRows() const
 {
 	return _visibleRows;
+}
+
+size_t TextList::getColumnCount(size_t row) const
+{
+	return row < _texts.size() ? _texts[row].size() : 0;
+}
+
+bool TextList::accessibilityMoveSelection(int direction)
+{
+	if (_rows.empty() || direction == 0) return false;
+	const size_t oldSelection = _selRow;
+	if (_selRow >= _rows.size()) _selRow = 0;
+	else if (direction < 0) _selRow = _selRow == 0 ? _rows.size() - 1 : _selRow - 1;
+	else _selRow = (_selRow + 1) % _rows.size();
+	if (_selRow < _scroll) scrollTo(_selRow);
+	else if (_visibleRows > 0 && _selRow >= _scroll + _visibleRows) scrollTo(_selRow - _visibleRows + 1);
+	draw();
+	return _selRow != oldSelection;
+}
+
+bool TextList::hasAccessibilityAdjustment() const
+{
+	return _accessibilityDecrease != 0 || _accessibilityIncrease != 0;
+}
+
+bool TextList::accessibilityAdjust(int direction, Action *, State *state)
+{
+	if (!state || direction == 0) return false;
+	ActionHandler handler = direction < 0 ? _accessibilityDecrease : _accessibilityIncrease;
+	if (!handler) return false;
+	SDL_Event event = {};
+	event.type = SDL_MOUSEBUTTONUP;
+	event.button.button = SDL_BUTTON_LEFT;
+	Action action(&event, 1.0, 1.0, 0, 0);
+	action.setSender(this);
+	(state->*handler)(&action);
+	return true;
 }
 
 /**
@@ -780,6 +819,16 @@ void TextList::onRightArrowClick(ActionHandler handler)
 	{
 		(*i)->onMouseClick(handler, 0);
 	}
+}
+
+void TextList::onAccessibilityDecrease(ActionHandler handler)
+{
+	_accessibilityDecrease = handler;
+}
+
+void TextList::onAccessibilityIncrease(ActionHandler handler)
+{
+	_accessibilityIncrease = handler;
 }
 
 /**

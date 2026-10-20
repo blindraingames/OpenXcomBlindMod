@@ -87,6 +87,12 @@ public:
 	size_t getHoveredListIdx() const;
 	/// Sets the button text without changing the selected option
 	void setText(const std::string &text);
+	/// Gets the text displayed by the combo box.
+	std::string getText() const;
+	/// Gets the number of available options.
+	size_t getOptionCount() const;
+	/// Moves the selection without opening the mouse-driven popup.
+	bool accessibilityMoveSelection(int direction, Action *action, State *state);
 	/// Sets the selected option in the list.
 	void setSelected(size_t sel);
 	/// Sets the list of options.

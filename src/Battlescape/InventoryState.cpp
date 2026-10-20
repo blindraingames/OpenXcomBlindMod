@@ -269,6 +269,21 @@ InventoryState::~InventoryState()
 	}
 }
 
+Inventory *InventoryState::getInventory() const
+{
+	return _inv;
+}
+
+BattleUnit *InventoryState::getSelectedUnit() const
+{
+	return _battleGame ? _battleGame->getSelectedUnit() : 0;
+}
+
+bool InventoryState::isTuMode() const
+{
+	return _tu;
+}
+
 /**
  * Updates all soldier stats when the soldier changes.
  */

@@ -128,6 +128,8 @@ PurchaseState::PurchaseState(Base *base) : _base(base), _sel(0), _total(0), _pQt
 	_lstItems->onRightArrowRelease((ActionHandler)&PurchaseState::lstItemsRightArrowRelease);
 	_lstItems->onRightArrowClick((ActionHandler)&PurchaseState::lstItemsRightArrowClick);
 	_lstItems->onMousePress((ActionHandler)&PurchaseState::lstItemsMousePress);
+	_lstItems->onAccessibilityDecrease((ActionHandler)&PurchaseState::accessibilityDecrease);
+	_lstItems->onAccessibilityIncrease((ActionHandler)&PurchaseState::accessibilityIncrease);
 
 	_cats.push_back("STR_ALL_ITEMS");
 
@@ -635,6 +637,22 @@ void PurchaseState::decreaseByValue(int change)
 	getRow().amount -= change;
 	_total -= getRow().cost * change;
 	updateItemStrings();
+}
+
+void PurchaseState::accessibilityDecrease(Action *)
+{
+	const unsigned int selected = _lstItems->getSelectedRow();
+	if (selected == static_cast<unsigned int>(-1) || selected >= _rows.size()) return;
+	_sel = selected;
+	decreaseByValue(1);
+}
+
+void PurchaseState::accessibilityIncrease(Action *)
+{
+	const unsigned int selected = _lstItems->getSelectedRow();
+	if (selected == static_cast<unsigned int>(-1) || selected >= _rows.size()) return;
+	_sel = selected;
+	increaseByValue(1);
 }
 
 /**

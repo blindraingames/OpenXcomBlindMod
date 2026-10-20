@@ -102,6 +102,8 @@ public:
 	void animate(bool redraw);
 	/// Sets the battlescape selector position relative to mouseposition.
 	void setSelectorPosition(int mx, int my);
+	/// Sets the battlescape selector to a logical map position.
+	void setSelectorPosition(const Position &pos);
 	/// Gets the currently selected position.
 	void getSelectorPosition(Position *pos) const;
 	/// Calculates the offset of a soldier, when it is walking in the middle of 2 tiles.

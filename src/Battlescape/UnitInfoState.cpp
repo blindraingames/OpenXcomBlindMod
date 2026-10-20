@@ -47,7 +47,7 @@ namespace OpenXcom
  * @param fromInventory Is player coming from the inventory?
  * @param mindProbe Is player using a Mind Probe?
  */
-UnitInfoState::UnitInfoState(BattleUnit *unit, BattlescapeState *parent, bool fromInventory, bool mindProbe) : _unit(unit), _parent(parent), _fromInventory(fromInventory), _mindProbe(mindProbe)
+UnitInfoState::UnitInfoState(BattleUnit *unit, BattlescapeState *parent, bool fromInventory, bool mindProbe) : _unit(unit), _parent(parent), _fromInventory(fromInventory), _mindProbe(mindProbe), _btnPrev(0), _btnNext(0)
 {
 	if (Options::maximizeInfoScreens)
 	{
@@ -441,6 +441,64 @@ UnitInfoState::UnitInfoState(BattleUnit *unit, BattlescapeState *parent, bool fr
 UnitInfoState::~UnitInfoState()
 {
 
+}
+
+BattleUnit *UnitInfoState::getUnit() const
+{
+	return _unit;
+}
+
+InteractiveSurface *UnitInfoState::getInfoControl() const
+{
+	return _exit;
+}
+
+TextButton *UnitInfoState::getPreviousButton() const
+{
+	return _btnPrev;
+}
+
+TextButton *UnitInfoState::getNextButton() const
+{
+	return _btnNext;
+}
+
+bool UnitInfoState::isMindProbe() const
+{
+	return _mindProbe;
+}
+
+std::string UnitInfoState::getDisplayedName() const
+{
+	return _txtName ? _txtName->getText() : std::string();
+}
+
+std::vector<std::pair<std::string, std::string> > UnitInfoState::getStatRows() const
+{
+	std::vector<std::pair<std::string, std::string> > rows;
+#define ADD_VISIBLE_STAT(label, value) \
+	if ((label)->getVisible() && !(label)->getHidden() && (value)->getVisible() && !(value)->getHidden()) \
+		rows.push_back(std::make_pair((label)->getText(), (value)->getText()))
+	ADD_VISIBLE_STAT(_txtTimeUnits, _numTimeUnits);
+	ADD_VISIBLE_STAT(_txtEnergy, _numEnergy);
+	ADD_VISIBLE_STAT(_txtHealth, _numHealth);
+	ADD_VISIBLE_STAT(_txtFatalWounds, _numFatalWounds);
+	ADD_VISIBLE_STAT(_txtBravery, _numBravery);
+	ADD_VISIBLE_STAT(_txtMorale, _numMorale);
+	ADD_VISIBLE_STAT(_txtReactions, _numReactions);
+	ADD_VISIBLE_STAT(_txtFiring, _numFiring);
+	ADD_VISIBLE_STAT(_txtThrowing, _numThrowing);
+	ADD_VISIBLE_STAT(_txtMelee, _numMelee);
+	ADD_VISIBLE_STAT(_txtStrength, _numStrength);
+	ADD_VISIBLE_STAT(_txtPsiStrength, _numPsiStrength);
+	ADD_VISIBLE_STAT(_txtPsiSkill, _numPsiSkill);
+	ADD_VISIBLE_STAT(_txtFrontArmor, _numFrontArmor);
+	ADD_VISIBLE_STAT(_txtLeftArmor, _numLeftArmor);
+	ADD_VISIBLE_STAT(_txtRightArmor, _numRightArmor);
+	ADD_VISIBLE_STAT(_txtRearArmor, _numRearArmor);
+	ADD_VISIBLE_STAT(_txtUnderArmor, _numUnderArmor);
+#undef ADD_VISIBLE_STAT
+	return rows;
 }
 
 /**

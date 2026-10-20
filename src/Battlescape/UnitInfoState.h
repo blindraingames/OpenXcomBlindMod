@@ -18,6 +18,9 @@
  * along with OpenXcom.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "../Engine/State.h"
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace OpenXcom
 {
@@ -64,6 +67,20 @@ public:
 	UnitInfoState(BattleUnit *unit, BattlescapeState *parent, bool fromInventory, bool mindProbe);
 	/// Cleans up the Unit Info state.
 	~UnitInfoState();
+	/// Gets the unit whose information is displayed.
+	BattleUnit *getUnit() const;
+	/// Gets the logical control representing the statistics list.
+	InteractiveSurface *getInfoControl() const;
+	/// Gets the previous-unit button, when present.
+	TextButton *getPreviousButton() const;
+	/// Gets the next-unit button, when present.
+	TextButton *getNextButton() const;
+	/// Returns whether this screen was opened by a mind probe.
+	bool isMindProbe() const;
+	/// Gets the visible statistic labels and values.
+	std::vector<std::pair<std::string, std::string> > getStatRows() const;
+	/// Gets the name displayed at the top of the screen.
+	std::string getDisplayedName() const;
 	/// Updates the unit info.
 	void init();
 	/// Handler for clicking the button.

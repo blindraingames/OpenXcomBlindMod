@@ -49,6 +49,7 @@ void GoToMainMenuState::init()
  */
 MainMenuState::MainMenuState()
 {
+	setAccessibilityTitle(tr("STR_OPENXCOM"));
 	// Create objects
 	_window = new Window(this, 256, 160, 32, 20, POPUP_BOTH);
 	_btnNewGame = new TextButton(92, 20, 64, 90);

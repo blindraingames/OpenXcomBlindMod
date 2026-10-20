@@ -57,6 +57,7 @@ private:
 	int _arrowPos, _scrollPos;
 	ArrowOrientation _arrowType;
 	ActionHandler _leftClick, _leftPress, _leftRelease, _rightClick, _rightPress, _rightRelease;
+	ActionHandler _accessibilityDecrease, _accessibilityIncrease;
 	int _arrowsLeftEdge, _arrowsRightEdge;
 	ComboBox *_comboBox;
 
@@ -101,6 +102,14 @@ public:
 	size_t getRows() const;
 	/// Gets the amount of visible rows in the list.
 	size_t getVisibleRows() const;
+	/// Gets the amount of columns in a stored text row.
+	size_t getColumnCount(size_t row) const;
+	/// Moves the keyboard-accessible row selection.
+	bool accessibilityMoveSelection(int direction);
+	/// Returns whether the list supports keyboard-accessible horizontal adjustment.
+	bool hasAccessibilityAdjustment() const;
+	/// Adjusts the current value through a state-provided accessibility handler.
+	bool accessibilityAdjust(int direction, Action *action, State *state);
 	/// Adds a new row to the text list.
 	void addRow(int cols, ...);
 	/// Sets the columns in the text list.
@@ -159,6 +168,10 @@ public:
 	void onRightArrowPress(ActionHandler handler);
 	/// Hooks an action handler to a mouse release over the right arrows.
 	void onRightArrowRelease(ActionHandler handler);
+	/// Hooks an action handler to decreasing the selected row with the keyboard.
+	void onAccessibilityDecrease(ActionHandler handler);
+	/// Hooks an action handler to increasing the selected row with the keyboard.
+	void onAccessibilityIncrease(ActionHandler handler);
 	/// Clears the list.
 	void clearList();
 	/// Scrolls the list up.

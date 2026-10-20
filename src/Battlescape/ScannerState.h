@@ -45,6 +45,8 @@ public:
 	/// Creates the ScannerState.
 	ScannerState(BattleAction *action);
 	~ScannerState();
+	/// Gets the scanner view used by the accessibility adapter.
+	ScannerView *getScannerView() const;
 	/// Handler for right-clicking anything.
 	void handle(Action *action);
 	/// Handles timers.

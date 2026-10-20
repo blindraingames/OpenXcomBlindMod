@@ -113,6 +113,11 @@ PlaceFacilityState::~PlaceFacilityState()
 
 }
 
+RuleBaseFacility *PlaceFacilityState::getFacilityRule() const
+{
+	return _rule;
+}
+
 /**
  * Returns to the previous screen.
  * @param action Pointer to an action.

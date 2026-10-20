@@ -74,6 +74,10 @@ private:
 	bool _playerPanicHandled;
 	int _AIActionCounter;
 	BattleAction _currentAction;
+	int _psiAttackResultSequence;
+	BattleActionType _lastPsiAttackType;
+	BattleUnit *_lastPsiAttackTarget;
+	bool _lastPsiAttackSuccessful;
 	bool _AISecondMove, _playedAggroSound;
 	bool _endTurnRequested, _endTurnProcessed;
 
@@ -136,6 +140,16 @@ public:
 	BattleAction *getCurrentAction();
 	/// Determines whether there is an action currently going on.
 	bool isBusy() const;
+	/// Records the result of a completed psionic attack.
+	void recordPsiAttackResult(BattleActionType type, BattleUnit *target, bool successful);
+	/// Gets the monotonically increasing psionic result sequence number.
+	int getPsiAttackResultSequence() const;
+	/// Gets the type of the last completed psionic attack.
+	BattleActionType getLastPsiAttackType() const;
+	/// Gets the target of the last completed psionic attack.
+	BattleUnit *getLastPsiAttackTarget() const;
+	/// Returns whether the last completed psionic attack succeeded.
+	bool wasLastPsiAttackSuccessful() const;
 	/// Activates primary action (left click).
 	void primaryAction(Position pos);
 	/// Activates secondary action (right click).

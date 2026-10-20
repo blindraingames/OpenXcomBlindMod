@@ -20,6 +20,7 @@
 #include "../Engine/InteractiveSurface.h"
 #include <map>
 #include <string>
+#include <vector>
 
 namespace OpenXcom
 {
@@ -54,6 +55,8 @@ private:
 	int _depth;
 	/// Moves an item to a specified slot.
 	void moveItem(BattleItem *item, RuleInventory *slot, int x, int y);
+	/// Finds the first free position for an item in an inventory section.
+	bool findItemPosition(RuleInventory *slot, BattleItem *item, int *x, int *y) const;
 	/// Gets the slot in the specified position.
 	RuleInventory *getSlotInPosition(int *x, int *y) const;
 public:
@@ -103,6 +106,14 @@ public:
 	void showWarning(const std::string &msg);
 	/// Show priming warnings on grenades.
 	void drawPrimers();
+	/// Returns all movable items carried by the unit and lying on its tile.
+	std::vector<BattleItem*> getAccessibleItems() const;
+	/// Moves an item to the next suitable inventory section.
+	bool accessibilityCycleMove(BattleItem *item, std::string &message);
+	/// Loads compatible ammunition, or unloads a selected loaded weapon.
+	bool accessibilityLoadOrUnload(BattleItem *item, std::string &message);
+	/// Primes or deactivates a grenade while arranging pre-battle equipment.
+	bool accessibilityTogglePrime(BattleItem *item, int timer, std::string &message);
 };
 
 }

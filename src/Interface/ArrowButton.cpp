@@ -78,6 +78,11 @@ void ArrowButton::setShape(ArrowShape shape)
 	_redraw = true;
 }
 
+ArrowShape ArrowButton::getShape() const
+{
+	return _shape;
+}
+
 /**
  * Changes the list associated with the arrow button.
  * This makes the button scroll that list.

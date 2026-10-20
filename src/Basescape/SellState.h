@@ -99,6 +99,10 @@ public:
 	void updateItemStrings();
 	/// Handler for changing the category filter.
 	void cbxCategoryChange(Action *action);
+	/// Decreases the selected quantity through accessibility keyboard navigation.
+	void accessibilityDecrease(Action *action);
+	/// Increases the selected quantity through accessibility keyboard navigation.
+	void accessibilityIncrease(Action *action);
 };
 
 }

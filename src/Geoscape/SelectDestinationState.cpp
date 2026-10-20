@@ -204,13 +204,43 @@ void SelectDestinationState::globeClick(Action *action)
 		std::vector<Target*> v = _globe->getTargets(mouseX, mouseY, true);
 		if (v.empty())
 		{
-			Waypoint *w = new Waypoint();
-			w->setLongitude(lon);
-			w->setLatitude(lat);
-			v.push_back(w);
+			selectDestination(lon, lat);
+			return;
 		}
 		_game->pushState(new MultipleTargetsState(v, _craft, 0));
 	}
+}
+
+Globe *SelectDestinationState::getGlobe() const
+{
+	return _globe;
+}
+
+Craft *SelectDestinationState::getCraft() const
+{
+	return _craft;
+}
+
+/**
+ * Selects an arbitrary point on the globe.
+ */
+void SelectDestinationState::selectDestination(double lon, double lat)
+{
+	Waypoint *waypoint = new Waypoint();
+	waypoint->setLongitude(lon);
+	waypoint->setLatitude(lat);
+	selectTarget(waypoint);
+}
+
+/**
+ * Selects a known target on the globe.
+ */
+void SelectDestinationState::selectTarget(Target *target)
+{
+	if (!target) return;
+	std::vector<Target*> targets;
+	targets.push_back(target);
+	_game->pushState(new MultipleTargetsState(targets, _craft, 0));
 }
 
 /**

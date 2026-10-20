@@ -99,6 +99,7 @@ void create()
 	_info.push_back(OptionInfo("musicVolume", &musicVolume, 2*(MIX_MAX_VOLUME/3)));
 	_info.push_back(OptionInfo("uiVolume", &uiVolume, MIX_MAX_VOLUME/3));
 	_info.push_back(OptionInfo("language", &language, ""));
+	_info.push_back(OptionInfo("accessibilityMode", (int*)&accessibilityMode, ACCESSIBILITY_AUTO));
 	_info.push_back(OptionInfo("battleScrollSpeed", &battleScrollSpeed, 8));
 	_info.push_back(OptionInfo("battleEdgeScroll", (int*)&battleEdgeScroll, SCROLL_AUTO));
 	_info.push_back(OptionInfo("battleDragScrollButton", &battleDragScrollButton, SDL_BUTTON_MIDDLE));
@@ -375,6 +376,21 @@ void loadArgs(int argc, char *argv[])
 			else
 				argname = arg.substr(1, arg.length()-1);
 			std::transform(argname.begin(), argname.end(), argname.begin(), ::tolower);
+			if (argname == "accessibility")
+			{
+				_commandLine["accessibilitymode"] = "1";
+				continue;
+			}
+			if (argname == "no-accessibility")
+			{
+				_commandLine["accessibilitymode"] = "2";
+				continue;
+			}
+			if (argname == "god")
+			{
+				godMode = true;
+				continue;
+			}
 			if (argc > i + 1)
 			{
 				++i; // we'll be consuming the next argument too
@@ -427,6 +443,12 @@ bool showHelp(int argc, char *argv[])
 	help << "        use PATH as the default Config Folder instead of auto-detecting" << std::endl << std::endl;
 	help << "-master MOD" << std::endl;
 	help << "        set MOD to the current master mod (eg. -master xcom2)" << std::endl << std::endl;
+	help << "--accessibility" << std::endl;
+	help << "        force screen-reader accessibility on" << std::endl << std::endl;
+	help << "--no-accessibility" << std::endl;
+	help << "        disable screen-reader accessibility" << std::endl << std::endl;
+	help << "--god" << std::endl;
+	help << "        start new campaigns with maximum funds and protect XCOM soldiers from battle damage" << std::endl << std::endl;
 	help << "-KEY VALUE" << std::endl;
 	help << "        override option KEY with VALUE (eg. -displayWidth 640)" << std::endl << std::endl;
 	help << "-version" << std::endl;
@@ -450,6 +472,10 @@ bool showHelp(int argc, char *argv[])
 			else
 				argname = arg.substr(1, arg.length()-1);
 			std::transform(argname.begin(), argname.end(), argname.begin(), ::tolower);
+			if (argname == "accessibility" || argname == "no-accessibility" || argname == "god")
+			{
+				continue;
+			}
 			if (argname == "help" || argname == "?")
 			{
 				std::cout << help.str();

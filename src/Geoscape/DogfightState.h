@@ -43,6 +43,16 @@ class CraftWeaponProjectile;
  */
 class DogfightState : public State
 {
+public:
+	enum EngagementMode
+	{
+		MODE_STANDOFF,
+		MODE_CAUTIOUS,
+		MODE_STANDARD,
+		MODE_AGGRESSIVE,
+		MODE_DISENGAGE
+	};
+
 private:
 	GeoscapeState *_state;
 	Timer *_craftDamageAnimTimer;
@@ -142,6 +152,16 @@ public:
 	Ufo *getUfo() const;
 	/// Gets pointer to the craft in this dogfight.
 	Craft *getCraft() const;
+	/// Gets the current craft-to-UFO distance shown by the window.
+	int getCurrentDistance() const;
+	/// Gets the current localized status shown by the window.
+	std::string getStatusText() const;
+	/// Gets the selected engagement mode.
+	EngagementMode getEngagementMode() const;
+	/// Selects an engagement mode through the normal button event path.
+	void accessibilitySetEngagementMode(EngagementMode mode);
+	/// Gets whether a craft weapon is enabled for automatic fire.
+	bool isWeaponEnabled(size_t weapon) const;
 	/// Waits until the UFO reaches a polygon.
 	void setWaitForPoly(bool wait);
 	/// Waits until the UFO reaches a polygon.

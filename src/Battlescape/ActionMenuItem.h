@@ -53,6 +53,12 @@ public:
 	BattleActionType getAction() const;
 	/// Gets the assigned action TUs.
 	int getTUs() const;
+	/// Gets the localized action description for accessibility.
+	std::string getDescription() const;
+	/// Gets the localized accuracy text for accessibility.
+	std::string getAccuracyText() const;
+	/// Gets the localized TU text for accessibility.
+	std::string getTUText() const;
 	/// Sets the palettes.
 	void setPalette(SDL_Color *colors, int firstcolor, int ncolors);
 	/// Redraws it.

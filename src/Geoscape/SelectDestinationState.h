@@ -24,6 +24,7 @@ namespace OpenXcom
 
 class Craft;
 class Globe;
+class Target;
 class InteractiveSurface;
 class Timer;
 class Window;
@@ -56,6 +57,14 @@ public:
 	void handle(Action *action);
 	/// Handler for clicking the globe.
 	void globeClick(Action *action);
+	/// Gets the globe used for destination selection.
+	Globe *getGlobe() const;
+	/// Gets the craft whose destination is being selected.
+	Craft *getCraft() const;
+	/// Selects an arbitrary coordinate through the normal confirmation flow.
+	void selectDestination(double lon, double lat);
+	/// Selects a known target through the normal confirmation flow.
+	void selectTarget(Target *target);
 	/// Handler for pressing the Rotate Left arrow.
 	void btnRotateLeftPress(Action *action);
 	/// Handler for releasing the Rotate Left arrow.

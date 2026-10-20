@@ -19,6 +19,8 @@ option ( ENABLE_CLANG_ANALYSIS "When building with clang, enable the static anal
 option ( CHECK_CCACHE "Check if ccache is installed and use it" OFF )
 set ( MSVC_WARNING_LEVEL 3 CACHE STRING "Visual Studio warning levels" )
 option ( FORCE_INSTALL_DATA_TO_BIN "Force installation of data to binary directory" OFF )
+option ( COPY_DATA_TO_BUILD "Copy game data directories beside the built executable" ON )
+option ( COPY_ORIGINAL_GAME_DATA_TO_BUILD "Copy the large UFO and TFTD resource directories beside the built executable" OFF )
 set ( DATADIR "" CACHE STRING "Where to search for datafiles" )
 set ( OPENXCOM_VERSION_STRING "" CACHE STRING "Version string (after x.x)" )
 

@@ -21,6 +21,7 @@
 #include <sstream>
 #include "GeoscapeState.h"
 #include "../Engine/Game.h"
+#include "../Engine/Action.h"
 #include "../Mod/Mod.h"
 #include "../Engine/Screen.h"
 #include "../Engine/LocalizedText.h"
@@ -1824,6 +1825,50 @@ Ufo *DogfightState::getUfo() const
 Craft *DogfightState::getCraft() const
 {
 	return _craft;
+}
+
+int DogfightState::getCurrentDistance() const
+{
+	return _currentDist;
+}
+
+std::string DogfightState::getStatusText() const
+{
+	return _txtStatus->getText();
+}
+
+DogfightState::EngagementMode DogfightState::getEngagementMode() const
+{
+	if (_mode == _btnCautious) return MODE_CAUTIOUS;
+	if (_mode == _btnStandard) return MODE_STANDARD;
+	if (_mode == _btnAggressive) return MODE_AGGRESSIVE;
+	if (_mode == _btnDisengage) return MODE_DISENGAGE;
+	return MODE_STANDOFF;
+}
+
+void DogfightState::accessibilitySetEngagementMode(EngagementMode mode)
+{
+	ImageButton *button = _btnStandoff;
+	switch (mode)
+	{
+	case MODE_CAUTIOUS: button = _btnCautious; break;
+	case MODE_STANDARD: button = _btnStandard; break;
+	case MODE_AGGRESSIVE: button = _btnAggressive; break;
+	case MODE_DISENGAGE: button = _btnDisengage; break;
+	default: break;
+	}
+	SDL_Event event = {};
+	event.type = SDL_MOUSEBUTTONDOWN;
+	event.button.button = SDL_BUTTON_LEFT;
+	Action action(&event, 1.0, 1.0, 0, 0);
+	button->mousePress(&action, this);
+}
+
+bool DogfightState::isWeaponEnabled(size_t weapon) const
+{
+	if (weapon == 0) return _weapon1Enabled;
+	if (weapon == 1) return _weapon2Enabled;
+	return false;
 }
 
 /**

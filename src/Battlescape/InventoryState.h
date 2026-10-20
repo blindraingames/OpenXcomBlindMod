@@ -94,6 +94,12 @@ public:
 	void txtTooltipIn(Action *action);
 	/// Handler for hiding tooltip.
 	void txtTooltipOut(Action *action);
+	/// Gets the inventory widget for the accessibility adapter.
+	Inventory *getInventory() const;
+	/// Gets the currently displayed unit.
+	BattleUnit *getSelectedUnit() const;
+	/// Returns whether inventory operations cost time units.
+	bool isTuMode() const;
 
 private:
 	/// Update the visibility and icons for the template buttons

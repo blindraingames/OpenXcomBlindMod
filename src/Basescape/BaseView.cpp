@@ -167,6 +167,76 @@ int BaseView::getGridY() const
 }
 
 /**
+ * Moves the non-visual cursor used by the accessibility adapter.
+ * @param x Grid column.
+ * @param y Grid row.
+ * @return True when the requested square is inside the base grid.
+ */
+bool BaseView::accessibilitySetGridPosition(int x, int y)
+{
+	if (x < 0 || x >= BASE_SIZE || y < 0 || y >= BASE_SIZE)
+	{
+		return false;
+	}
+
+	_gridX = x;
+	_gridY = y;
+	_selFacility = _facilities[x][y];
+	if (_selector != 0 && _selSize > 0)
+	{
+		if (x + _selSize <= BASE_SIZE && y + _selSize <= BASE_SIZE)
+		{
+			_selector->setX(_x + x * GRID_SIZE);
+			_selector->setY(_y + y * GRID_SIZE);
+			_selector->setVisible(true);
+		}
+		else
+		{
+			_selector->setVisible(false);
+		}
+	}
+	return true;
+}
+
+/**
+ * Gets the facility occupying a grid square.
+ */
+BaseFacility *BaseView::getFacilityAt(int x, int y) const
+{
+	if (x < 0 || x >= BASE_SIZE || y < 0 || y >= BASE_SIZE) return 0;
+	return _facilities[x][y];
+}
+
+/**
+ * Gets the active placement footprint.
+ */
+int BaseView::getSelectionSize() const
+{
+	return _selSize;
+}
+
+/**
+ * Checks whether the active grid position can contain an empty square area.
+ * Connectivity is intentionally not checked here; normal facility placement
+ * must continue to use isPlaceable().
+ */
+bool BaseView::isAreaAvailable(int size) const
+{
+	if (size <= 0) return false;
+	for (int y = _gridY; y < _gridY + size; ++y)
+	{
+		for (int x = _gridX; x < _gridX + size; ++x)
+		{
+			if (x < 0 || x >= BASE_SIZE || y < 0 || y >= BASE_SIZE || _facilities[x][y] != 0)
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
+/**
  * If enabled, the base view will respond to player input,
  * highlighting the selected facility.
  * @param size Facility length (0 disables it).
@@ -512,26 +582,9 @@ void BaseView::blit(Surface *surface)
  */
 void BaseView::mouseOver(Action *action, State *state)
 {
-	_gridX = (int)floor(action->getRelativeXMouse() / (GRID_SIZE * action->getXScale()));
-	_gridY = (int)floor(action->getRelativeYMouse() / (GRID_SIZE * action->getYScale()));
-	if (_gridX >= 0 && _gridX < BASE_SIZE && _gridY >= 0 && _gridY < BASE_SIZE)
-	{
-		_selFacility = _facilities[_gridX][_gridY];
-		if (_selSize > 0)
-		{
-			if (_gridX + _selSize - 1 < BASE_SIZE && _gridY + _selSize - 1 < BASE_SIZE)
-			{
-				_selector->setX(_x + _gridX * GRID_SIZE);
-				_selector->setY(_y + _gridY * GRID_SIZE);
-				_selector->setVisible(true);
-			}
-			else
-			{
-				_selector->setVisible(false);
-			}
-		}
-	}
-	else
+	const int gridX = (int)floor(action->getRelativeXMouse() / (GRID_SIZE * action->getXScale()));
+	const int gridY = (int)floor(action->getRelativeYMouse() / (GRID_SIZE * action->getYScale()));
+	if (!accessibilitySetGridPosition(gridX, gridY))
 	{
 		_selFacility = 0;
 		if (_selSize > 0)

@@ -134,6 +134,8 @@ CraftEquipmentState::CraftEquipmentState(Base *base, size_t craft) : _sel(0), _c
 	_lstEquipment->onRightArrowRelease((ActionHandler)&CraftEquipmentState::lstEquipmentRightArrowRelease);
 	_lstEquipment->onRightArrowClick((ActionHandler)&CraftEquipmentState::lstEquipmentRightArrowClick);
 	_lstEquipment->onMousePress((ActionHandler)&CraftEquipmentState::lstEquipmentMousePress);
+	_lstEquipment->onAccessibilityDecrease((ActionHandler)&CraftEquipmentState::lstEquipmentLeftArrowClick);
+	_lstEquipment->onAccessibilityIncrease((ActionHandler)&CraftEquipmentState::lstEquipmentRightArrowClick);
 
 	int row = 0;
 	const std::vector<std::string> &items = _game->getMod()->getItemsList();
@@ -272,6 +274,9 @@ void CraftEquipmentState::lstEquipmentLeftArrowRelease(Action *action)
  */
 void CraftEquipmentState::lstEquipmentLeftArrowClick(Action *action)
 {
+	const unsigned int selected = _lstEquipment->getSelectedRow();
+	if (selected == static_cast<unsigned int>(-1) || selected >= _items.size()) return;
+	_sel = selected;
 	if (action->getDetails()->button.button == SDL_BUTTON_RIGHT) moveLeftByValue(INT_MAX);
 	if (action->getDetails()->button.button == SDL_BUTTON_LEFT)
 	{
@@ -309,6 +314,9 @@ void CraftEquipmentState::lstEquipmentRightArrowRelease(Action *action)
  */
 void CraftEquipmentState::lstEquipmentRightArrowClick(Action *action)
 {
+	const unsigned int selected = _lstEquipment->getSelectedRow();
+	if (selected == static_cast<unsigned int>(-1) || selected >= _items.size()) return;
+	_sel = selected;
 	if (action->getDetails()->button.button == SDL_BUTTON_RIGHT) moveRightByValue(INT_MAX);
 	if (action->getDetails()->button.button == SDL_BUTTON_LEFT)
 	{

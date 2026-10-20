@@ -180,6 +180,11 @@ void TextButton::setGroup(TextButton **group)
 	_redraw = true;
 }
 
+bool TextButton::isPressed() const
+{
+	return _group != 0 && *_group == this;
+}
+
 /**
  * Replaces a certain amount of colors in the surface's palette.
  * @param colors Pointer to the set of colors.

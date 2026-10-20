@@ -2,6 +2,48 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Accessibility\AccessibilityFocusManager.cpp">
+      <Filter>Accessibility</Filter>
+    </ClCompile>
+    <ClCompile Include="Accessibility\AccessibilityInput.cpp">
+      <Filter>Accessibility</Filter>
+    </ClCompile>
+    <ClCompile Include="Accessibility\AccessibilityManager.cpp">
+      <Filter>Accessibility</Filter>
+    </ClCompile>
+    <ClCompile Include="Accessibility\AccessibilityText.cpp">
+      <Filter>Accessibility</Filter>
+    </ClCompile>
+    <ClCompile Include="Accessibility\AccessibleNode.cpp">
+      <Filter>Accessibility</Filter>
+    </ClCompile>
+    <ClCompile Include="Accessibility\BasescapeAccessibility.cpp">
+      <Filter>Accessibility</Filter>
+    </ClCompile>
+    <ClCompile Include="Accessibility\BattlescapeAccessibility.cpp">
+      <Filter>Accessibility</Filter>
+    </ClCompile>
+    <ClCompile Include="Accessibility\GeoscapeAccessibility.cpp">
+      <Filter>Accessibility</Filter>
+    </ClCompile>
+    <ClCompile Include="Accessibility\GenericStateAccessibility.cpp">
+      <Filter>Accessibility</Filter>
+    </ClCompile>
+	<ClCompile Include="Accessibility\InventoryAccessibility.cpp">
+	  <Filter>Accessibility</Filter>
+	</ClCompile>
+    <ClCompile Include="Accessibility\ScannerAccessibility.cpp">
+      <Filter>Accessibility</Filter>
+    </ClCompile>
+    <ClCompile Include="Accessibility\UnitInfoAccessibility.cpp">
+      <Filter>Accessibility</Filter>
+    </ClCompile>
+    <ClCompile Include="Accessibility\StateAccessibility.cpp">
+      <Filter>Accessibility</Filter>
+    </ClCompile>
+    <ClCompile Include="Accessibility\TolkBridge.cpp">
+      <Filter>Accessibility</Filter>
+    </ClCompile>
     <ClCompile Include="Basescape\MiniBaseView.cpp">
       <Filter>Basescape</Filter>
     </ClCompile>
@@ -1903,6 +1945,48 @@
     <ClInclude Include="Savegame\SoldierDiary.h">
       <Filter>Savegame</Filter>
     </ClInclude>
+    <ClInclude Include="Accessibility\AccessibilityFocusManager.h">
+      <Filter>Accessibility</Filter>
+    </ClInclude>
+    <ClInclude Include="Accessibility\AccessibilityInput.h">
+      <Filter>Accessibility</Filter>
+    </ClInclude>
+    <ClInclude Include="Accessibility\AccessibilityManager.h">
+      <Filter>Accessibility</Filter>
+    </ClInclude>
+    <ClInclude Include="Accessibility\AccessibilityText.h">
+      <Filter>Accessibility</Filter>
+    </ClInclude>
+    <ClInclude Include="Accessibility\AccessibleNode.h">
+      <Filter>Accessibility</Filter>
+    </ClInclude>
+    <ClInclude Include="Accessibility\BasescapeAccessibility.h">
+      <Filter>Accessibility</Filter>
+    </ClInclude>
+    <ClInclude Include="Accessibility\BattlescapeAccessibility.h">
+      <Filter>Accessibility</Filter>
+    </ClInclude>
+    <ClInclude Include="Accessibility\GeoscapeAccessibility.h">
+      <Filter>Accessibility</Filter>
+    </ClInclude>
+    <ClInclude Include="Accessibility\GenericStateAccessibility.h">
+      <Filter>Accessibility</Filter>
+    </ClInclude>
+	<ClInclude Include="Accessibility\InventoryAccessibility.h">
+	  <Filter>Accessibility</Filter>
+	</ClInclude>
+    <ClInclude Include="Accessibility\ScannerAccessibility.h">
+      <Filter>Accessibility</Filter>
+    </ClInclude>
+    <ClInclude Include="Accessibility\UnitInfoAccessibility.h">
+      <Filter>Accessibility</Filter>
+    </ClInclude>
+    <ClInclude Include="Accessibility\StateAccessibility.h">
+      <Filter>Accessibility</Filter>
+    </ClInclude>
+    <ClInclude Include="Accessibility\TolkBridge.h">
+      <Filter>Accessibility</Filter>
+    </ClInclude>
     <ClInclude Include="Basescape\SoldierDiaryMissionState.h">
       <Filter>Basescape</Filter>
     </ClInclude>
@@ -1938,6 +2022,9 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <Filter Include="Accessibility">
+      <UniqueIdentifier>{14654d4e-2043-4f10-a336-c0c289109e82}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Geoscape">
       <UniqueIdentifier>{f0521223-4515-4155-bf25-5f00373167d5}</UniqueIdentifier>
     </Filter>

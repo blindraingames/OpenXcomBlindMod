@@ -48,6 +48,8 @@ public:
 	~PlaceLiftState();
 	/// Handler for clicking the base view.
 	void viewClick(Action *action);
+	/// Gets the lift rule used by accessibility placement navigation.
+	RuleBaseFacility *getFacilityRule() const;
 };
 
 }

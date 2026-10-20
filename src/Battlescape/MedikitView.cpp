@@ -142,4 +142,20 @@ void MedikitView::updateSelectedPart()
 	}
 }
 
+bool MedikitView::accessibilityMoveSelection(int direction)
+{
+	_selectedPart = (_selectedPart + (direction < 0 ? 5 : 1)) % 6;
+	_redraw = true;
+	draw();
+	return true;
+}
+
+std::string MedikitView::getAccessibilityDescription() const
+{
+	std::ostringstream result;
+	result << _game->getLanguage()->getString(PARTS_STRING[_selectedPart])
+		<< ". " << _game->getLanguage()->getString("STR_ACCESSIBILITY_FATAL_WOUNDS").arg(_unit->getFatalWound(_selectedPart));
+	return result.str();
+}
+
 }

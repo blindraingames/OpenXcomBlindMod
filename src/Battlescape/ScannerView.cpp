@@ -44,6 +44,38 @@ ScannerView::ScannerView (int w, int h, int x, int y, Game * game, BattleUnit *u
 }
 
 /**
+ * Gets the movement markers currently displayed by the scanner.
+ * Coordinates are relative to the scanning unit; size is the unanimated
+ * DETBLOB frame from 0 (smallest) to 5 (largest).
+ * @return Movement markers in the same order as they are drawn.
+ */
+std::vector<MotionScannerBlip> ScannerView::getBlips() const
+{
+	std::vector<MotionScannerBlip> blips;
+	if (!_game || !_unit || !_game->getSavedGame() || !_game->getSavedGame()->getSavedBattle()) return blips;
+
+	SavedBattleGame *battle = _game->getSavedGame()->getSavedBattle();
+	for (int x = -9; x < 10; ++x)
+	{
+		for (int y = -9; y < 10; ++y)
+		{
+			for (int z = 0; z < battle->getMapSizeZ(); ++z)
+			{
+				Tile *tile = battle->getTile(Position(x, y, z) + Position(_unit->getPosition().x, _unit->getPosition().y, 0));
+				if (!tile || !tile->getUnit() || !tile->getUnit()->getMotionPoints()) continue;
+
+				int size = tile->getUnit()->getMotionPoints() / 5;
+				if (size < 0) continue;
+				if (size > 5) size = 5;
+				MotionScannerBlip blip = { x, y, z - _unit->getPosition().z, size };
+				blips.push_back(blip);
+			}
+		}
+	}
+	return blips;
+}
+
+/**
  * Draws the ScannerView view.
  */
 void ScannerView::draw()
@@ -54,25 +86,11 @@ void ScannerView::draw()
 	clear();
 
 	this->lock();
-	for (int x = -9; x < 10; x++)
+	const std::vector<MotionScannerBlip> blips = getBlips();
+	for (std::vector<MotionScannerBlip>::const_iterator i = blips.begin(); i != blips.end(); ++i)
 	{
-		for (int y = -9; y < 10; y++)
-		{
-			for (int z = 0; z < _game->getSavedGame()->getSavedBattle()->getMapSizeZ(); z++)
-			{
-				Tile *t = _game->getSavedGame()->getSavedBattle()->getTile(Position(x,y,z) + Position(_unit->getPosition().x, _unit->getPosition().y, 0));
-				if (t && t->getUnit() && t->getUnit()->getMotionPoints())
-				{
-					int frame = (t->getUnit()->getMotionPoints() / 5);
-					if (frame >= 0)
-					{
-						if (frame > 5) frame = 5;
-						surface = set->getFrame(frame + _frame);
-						surface->blitNShade(this, Surface::getX()+((9+x)*8)-4, Surface::getY()+((9+y)*8)-4, 0);
-					}
-				}
-			}
-		}
+		surface = set->getFrame(i->size + _frame);
+		surface->blitNShade(this, Surface::getX()+((9+i->x)*8)-4, Surface::getY()+((9+i->y)*8)-4, 0);
 	}
 
 	// the arrow of the direction the unit is pointed

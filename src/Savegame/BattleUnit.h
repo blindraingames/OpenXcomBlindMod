@@ -131,6 +131,8 @@ private:
 
 	/// Helper function initing recolor vector.
 	void setRecolor(int basicLook, int utileLook, int rankLook);
+	/// Whether command-line god mode protects this XCOM soldier.
+	bool isGodProtected() const;
 public:
 	static const int MAX_SOLDIER_ID = 1000000;
 	/// Creates a BattleUnit from solder.

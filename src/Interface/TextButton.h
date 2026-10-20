@@ -75,6 +75,8 @@ public:
 	std::string getText() const;
 	/// Sets the text button's group.
 	void setGroup(TextButton **group);
+	/// Gets whether this button is the selected member of its group.
+	bool isPressed() const;
 	/// Sets the text button's palette.
 	void setPalette(SDL_Color *colors, int firstcolor = 0, int ncolors = 256);
 	/// Draws the text button.

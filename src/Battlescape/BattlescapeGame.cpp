@@ -68,7 +68,7 @@ bool BattlescapeGame::_debugPlay = false;
  * @param save Pointer to the save game.
  * @param parentState Pointer to the parent battlescape state.
  */
-BattlescapeGame::BattlescapeGame(SavedBattleGame *save, BattlescapeState *parentState) : _save(save), _parentState(parentState), _playerPanicHandled(true), _AIActionCounter(0), _AISecondMove(false), _playedAggroSound(false), _endTurnRequested(false), _endTurnProcessed(false)
+BattlescapeGame::BattlescapeGame(SavedBattleGame *save, BattlescapeState *parentState) : _save(save), _parentState(parentState), _playerPanicHandled(true), _AIActionCounter(0), _psiAttackResultSequence(0), _lastPsiAttackType(BA_NONE), _lastPsiAttackTarget(0), _lastPsiAttackSuccessful(false), _AISecondMove(false), _playedAggroSound(false), _endTurnRequested(false), _endTurnProcessed(false)
 {
 
 	_currentAction.actor = 0;
@@ -1420,6 +1420,34 @@ BattleAction *BattlescapeGame::getCurrentAction()
 bool BattlescapeGame::isBusy() const
 {
 	return !_states.empty();
+}
+
+void BattlescapeGame::recordPsiAttackResult(BattleActionType type, BattleUnit *target, bool successful)
+{
+	_lastPsiAttackType = type;
+	_lastPsiAttackTarget = target;
+	_lastPsiAttackSuccessful = successful;
+	++_psiAttackResultSequence;
+}
+
+int BattlescapeGame::getPsiAttackResultSequence() const
+{
+	return _psiAttackResultSequence;
+}
+
+BattleActionType BattlescapeGame::getLastPsiAttackType() const
+{
+	return _lastPsiAttackType;
+}
+
+BattleUnit *BattlescapeGame::getLastPsiAttackTarget() const
+{
+	return _lastPsiAttackTarget;
+}
+
+bool BattlescapeGame::wasLastPsiAttackSuccessful() const
+{
+	return _lastPsiAttackSuccessful;
 }
 
 /**

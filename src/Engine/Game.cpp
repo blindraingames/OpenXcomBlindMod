@@ -40,6 +40,7 @@
 #include "FileMap.h"
 #include "Unicode.h"
 #include "../Menu/TestState.h"
+#include "../Accessibility/AccessibilityManager.h"
 
 namespace OpenXcom
 {
@@ -51,7 +52,7 @@ const double Game::VOLUME_GRADIENT = 10.0;
  * creates the display screen and sets up the cursor.
  * @param title Title of the game window.
  */
-Game::Game(const std::string &title) : _screen(0), _cursor(0), _lang(0), _save(0), _mod(0), _quit(false), _init(false), _mouseActive(true), _timeUntilNextFrame(0)
+Game::Game(const std::string &title) : _screen(0), _cursor(0), _lang(0), _save(0), _mod(0), _quit(false), _init(false), _accessibility(0), _mouseActive(true), _timeUntilNextFrame(0)
 {
 	Options::reload = false;
 	Options::mute = false;
@@ -105,6 +106,9 @@ Game::Game(const std::string &title) : _screen(0), _cursor(0), _lang(0), _save(0
 	// Create blank language
 	_lang = new Language();
 
+	// Screen-reader support is initialized centrally and remains optional.
+	_accessibility = new AccessibilityManager();
+
 	_timeOfLastFrame = 0;
 }
 
@@ -115,6 +119,7 @@ Game::~Game()
 {
 	Sound::stop();
 	Music::stop();
+	delete _accessibility;
 
 	for (std::list<State*>::iterator i = _states.begin(); i != _states.end(); ++i)
 	{
@@ -174,6 +179,7 @@ void Game::run()
 			ev.motion.y = y;
 			Action action = Action(&ev, _screen->getXScale(), _screen->getYScale(), _screen->getCursorTopBlackBand(), _screen->getCursorLeftBlackBand());
 			_states.back()->handle(&action);
+			_accessibility->onStateActivated(_states.back());
 		}
 
 		// Process events
@@ -277,7 +283,10 @@ void Game::run()
 							}
 						}
 					}
-					_states.back()->handle(&action);
+					if (!_accessibility->handle(&action, _states.back()))
+					{
+						_states.back()->handle(&action);
+					}
 					break;
 			}
 			if (!_init)
@@ -293,6 +302,7 @@ void Game::run()
 		{
 			// Process logic
 			_states.back()->think();
+			_accessibility->update(_states.back());
 			_fpsCounter->think();
 			if (Options::FPS > 0 && !(Options::useOpenGL && Options::vSyncForOpenGL))
 			{

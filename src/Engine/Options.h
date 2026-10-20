@@ -31,6 +31,8 @@ namespace OpenXcom
 enum ScrollType { SCROLL_NONE, SCROLL_TRIGGER, SCROLL_AUTO };
 /// Keyboard input modes.
 enum KeyboardType { KEYBOARD_OFF, KEYBOARD_ON, KEYBOARD_VIRTUAL };
+/// Screen-reader accessibility modes.
+enum AccessibilityMode { ACCESSIBILITY_AUTO, ACCESSIBILITY_ON, ACCESSIBILITY_OFF };
 /// Savegame sorting modes.
 enum SaveSort { SORT_NAME_ASC, SORT_NAME_DESC, SORT_DATE_ASC, SORT_DATE_DESC };
 /// Music format preferences.

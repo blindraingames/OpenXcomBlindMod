@@ -52,6 +52,7 @@ protected:
 	InteractiveSurface *_modal;
 	RuleInterface *_ruleInterface;
 	RuleInterface *_ruleInterfaceParent;
+	std::string _accessibilityTitle;
 
 	SDL_Color _palette[256];
 	Uint8 _cursorColor;
@@ -102,6 +103,16 @@ public:
 	static void setGamePtr(Game* game);
 	/// Sets a modal surface.
 	void setModal(InteractiveSurface *surface);
+	/// Gets all surfaces so the accessibility layer can inspect the current state.
+	const std::vector<Surface*> &getSurfaces() const;
+	/// Gets the modal surface, if any.
+	InteractiveSurface *getModal() const;
+	/// Sets a concise title announced when this state becomes active.
+	void setAccessibilityTitle(const std::string &title);
+	/// Gets the accessibility title.
+	const std::string &getAccessibilityTitle() const;
+	/// Gets the game instance used by state adapters.
+	Game *getGame() const;
 	/// Changes a set of colors on the state's 8bpp palette.
 	void setPalette(SDL_Color *colors, int firstcolor = 0, int ncolors = 256, bool immediately = true);
 	/// Changes the state's 8bpp palette with certain resources.

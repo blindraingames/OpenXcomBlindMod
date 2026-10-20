@@ -18,6 +18,7 @@
  * along with OpenXcom.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "../Engine/InteractiveSurface.h"
+#include <string>
 
 namespace OpenXcom
 {
@@ -45,5 +46,9 @@ public:
 	int getSelectedPart() const;
 	/// Updates the selected body part.
 	void updateSelectedPart();
+	/// Selects the previous or next body part for keyboard accessibility.
+	bool accessibilityMoveSelection(int direction);
+	/// Returns the localized selected body part and fatal-wound count.
+	std::string getAccessibilityDescription() const;
 };
 }

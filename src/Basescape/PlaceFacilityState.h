@@ -52,6 +52,8 @@ public:
 	void btnCancelClick(Action *action);
 	/// Handler for clicking the base view.
 	void viewClick(Action *action);
+	/// Gets the facility rule used by accessibility placement navigation.
+	RuleBaseFacility *getFacilityRule() const;
 };
 
 }

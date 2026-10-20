@@ -54,6 +54,7 @@ namespace OpenXcom
  */
 OptionsBaseState::OptionsBaseState(OptionsOrigin origin) : _origin(origin), _group(0)
 {
+	setAccessibilityTitle(tr("STR_OPTIONS"));
 	// Create objects
 	_window = new Window(this, 320, 200, 0, 0);
 
