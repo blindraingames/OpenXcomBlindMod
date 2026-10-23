@@ -381,7 +381,7 @@ std::string GeoscapeAccessibility::describePosition(State *state, double lon, do
 
 	std::ostringstream result;
 	appendSentence(result, state->tr("STR_ACCESSIBILITY_GEO_COORDINATES")
-		.arg(latitude.str()).arg(text(state, latDegrees < 0.0 ? "STR_ACCESSIBILITY_SOUTH" : "STR_ACCESSIBILITY_NORTH"))
+		.arg(latitude.str()).arg(text(state, latDegrees > 0.0 ? "STR_ACCESSIBILITY_SOUTH" : "STR_ACCESSIBILITY_NORTH"))
 		.arg(longitude.str()).arg(text(state, lonDegrees < 0.0 ? "STR_ACCESSIBILITY_WEST" : "STR_ACCESSIBILITY_EAST")));
 
 	Region *region = save->locateRegion(lon, lat);
@@ -665,8 +665,8 @@ bool GeoscapeAccessibility::handle(Action *action, State *state, std::vector<std
 		const bool coarse = (modifiers & KMOD_SHIFT) != 0;
 		if (key == SDLK_LEFT) { moveCursor(state, -1, 0, coarse, messages); return true; }
 		if (key == SDLK_RIGHT) { moveCursor(state, 1, 0, coarse, messages); return true; }
-		if (key == SDLK_UP) { moveCursor(state, 0, 1, coarse, messages); return true; }
-		if (key == SDLK_DOWN) { moveCursor(state, 0, -1, coarse, messages); return true; }
+		if (key == SDLK_UP) { moveCursor(state, 0, -1, coarse, messages); return true; }
+		if (key == SDLK_DOWN) { moveCursor(state, 0, 1, coarse, messages); return true; }
 		if (key == SDLK_PAGEUP) { changeStep(state, 1, messages); return true; }
 		if (key == SDLK_PAGEDOWN) { changeStep(state, -1, messages); return true; }
 		if (key == SDLK_HOME)
